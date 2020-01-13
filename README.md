@@ -12,10 +12,11 @@ It is advised to bring all the applications needed for development already insta
 
 [How to install the requirements](workshop-requirements.md)
 
-# Part 1 - Introduction
+# Part 1 - Backend
+Part 1 will cover briefly KNIME development with Eclipse and more importantly the backend and project structure.
 
-# Part 2 - Backend
+[Part 1 - Backend](backend.md)
 
-# Part 3 - Frontend
-
+# Part 2 - Frontend
+Part 2 will cover the JS and CSS frontend and how they are configured and connected to the backend.
 
