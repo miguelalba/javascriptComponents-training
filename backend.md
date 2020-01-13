@@ -51,12 +51,12 @@ Now please add a new extension with the Add button and choose `org.knime.js.core
 | setValidationError-method-name | Helper to validate-method-name. It is optional and can be skipped. |
 | getComponentValue-method-name | Function that returns the view (node) value. It is mandatory. |
 
-![javascriptComponent_details](img/javascriptComponent_details.png)
+![javascriptComponent_details](img/javascriptComponent_details.PNG)
 
 Before creating the web resources bundle it is a good idea to create now the JS source folder that will contain the JS and CSS files. Inside the plugin project create a folder js-src/jsform: `File > New > Folder`. Inside this folder create two empty files named form.js and form.css.
 
 Now please add a new extension with the Add button and choose `org.knime.js.core.WebResources`.
-![webResources_details](img/webResources_details.png)
+![webResources_details](img/webResources_details.PNG)
 
 * webResourcesBundleID: Identifies the resources of this node and must match the implementationBundleID attribute of the JavaScript component or otherwise the backend and frontend will not be connected.
 * name: Same as in JavaScript component.
