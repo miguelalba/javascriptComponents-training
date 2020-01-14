@@ -198,7 +198,189 @@ public class JSFormViewRepresentation extends JSONViewContent {
 }
 ```
 
+### NodeModel class
+Every JS node extends the *AbstractWizardNodeModel* class with its view representation and value classes. Some of the methods of *AbstractWizardNodeModel* are:
+
+| Method | Description |
+| - | - |
+| createEmptyViewRepresentation | Self explanatory |
+| createEmptyViewValue | Self explanatory |
+| getJavascriptObjectID | Returns node id that matches the javascriptComponentID used earlier. |
+| isHideInWizard | Skip node in wizard execution. |
+| setHideInWizard | Skip node in wizard execution. |
+| validateViewValue | Validate view data. Optional. |
+| saveCurrentValue | Saves the current value in the view. Optional. |
+| configure | Check input spec and returns output spec. |
+| performExecute | Executes node. |
+| performReset | Clears internal data (if there is). |
+| useCurrentValueAsDefault | Saves the current value in the view as default. |
+| saveSettingsTo | Save node settings if any. |
+| validateSettings | Validate node settings if any. |
+| loadValidatedSettingsFrom | Load node settings if any. |
+
+#### NodeModel example
+
+```java
+package jsform;
+
+import org.knime.core.node.ExecutionContext;
+import org.knime.core.node.InvalidSettingsException;
+import org.knime.core.node.NodeSettingsRO;
+import org.knime.core.node.NodeSettingsWO;
+import org.knime.core.node.port.PortObject;
+import org.knime.core.node.port.PortObjectSpec;
+import org.knime.core.node.port.PortType;
+import org.knime.core.node.port.flowvariable.FlowVariablePortObject;
+import org.knime.core.node.port.flowvariable.FlowVariablePortObjectSpec;
+import org.knime.core.node.web.ValidationError;
+import org.knime.js.core.node.AbstractWizardNodeModel;
+
+public class JSFormNodeModel extends AbstractWizardNodeModel<JSFormViewRepresentation, JSFormViewValue> {
+
+	// Input and output port types
+	private static final PortType[] IN_TYPES = {};
+	private static final PortType[] OUT_TYPES = { FlowVariablePortObject.TYPE, FlowVariablePortObject.TYPE };
+
+	public JSFormNodeModel() {
+		super(IN_TYPES, OUT_TYPES, "JS Form");
+	}
+
+	@Override
+	public JSFormViewRepresentation createEmptyViewRepresentation() {
+		return new JSFormViewRepresentation();
+	}
+
+	@Override
+	public JSFormViewValue createEmptyViewValue() {
+		return new JSFormViewValue();
+	}
+
+	@Override
+	public String getJavascriptObjectID() {
+		return "jsform";
+	}
+
+	@Override
+	public boolean isHideInWizard() {
+		return false;
+	}
+
+	@Override
+	public void setHideInWizard(boolean hide) {
+	}
+
+	@Override
+	public ValidationError validateViewValue(JSFormViewValue viewContent) {
+		return null;
+	}
+
+	@Override
+	public void saveCurrentValue(NodeSettingsWO content) {
+	}
+
+	@Override
+	protected PortObjectSpec[] configure(PortObjectSpec[] inSpecs) throws InvalidSettingsException {
+		return new PortObjectSpec[] { FlowVariablePortObjectSpec.INSTANCE, FlowVariablePortObjectSpec.INSTANCE };
+	}
+
+	@Override
+	protected PortObject[] performExecute(PortObject[] inObjects, ExecutionContext exec) throws Exception {
+		final String firstName;
+		final String lastName;
+
+		synchronized (getLock()) {
+			JSFormViewValue value = getViewValue();
+			firstName = value.firstName;
+			lastName = value.lastName;
+		}
+
+		pushFlowVariableString("firstName", firstName);
+		pushFlowVariableString("lastName", lastName);
+
+		// The FlowVariablePortObject ports are a mockup. They are not actually
+		// necessary as the flow
+		// variables are shared across the workflow.
+		return new PortObject[] { FlowVariablePortObject.INSTANCE, FlowVariablePortObject.INSTANCE };
+	}
+
+	@Override
+	protected void performReset() {
+	}
+
+	@Override
+	protected void useCurrentValueAsDefault() {
+	}
+
+	@Override
+	protected void saveSettingsTo(NodeSettingsWO settings) {
+	}
+
+	@Override
+	protected void validateSettings(NodeSettingsRO settings) throws InvalidSettingsException {
+	}
+
+	@Override
+	protected void loadValidatedSettingsFrom(NodeSettingsRO settings) throws InvalidSettingsException {
+	}
+}
+```
+
 ### NodeFactory class
+Every KNIME node has a factory class that creates instances of that node. The NodeFactory of the JS nodes implements the WizardNodeFactory interface.
+
+```java
+public class JSFormFactory extends NodeFactory<JSFormNodeModel>
+		implements WizardNodeFactoryExtension<JSFormNodeModel, JSFormViewRepresentation, JSFormViewValue> {
+
+	@Override
+	public JSFormNodeModel createNodeModel() {
+		return new JSFormNodeModel();
+	}
+
+	@Override
+	protected int getNrNodeViews() {
+		return 0;
+	}
+
+	@Override
+	public NodeView<JSFormNodeModel> createNodeView(int viewIndex, JSFormNodeModel nodeModel) {
+		return null;
+	}
+
+	@Override
+	protected boolean hasDialog() {
+		return false;
+	}
+
+	@Override
+	protected NodeDialogPane createNodeDialogPane() {
+		return null;
+	}
+}
+```
 
 ### NodeFactory description file
+Every KNIME node has an XML description file that describes the node and provides some help.
 
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<knimeNode icon="" type="Source" deprecated="false"
+	xmlns="http://knime.org/node/v2.8" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://knime.org/node/v2.8 http://knime.org/node/v2.8.xsd">
+	<name>JS Form</name>
+
+	<shortDescription>JS Form</shortDescription>
+
+	<fullDescription>
+		<intro>
+		</intro>
+	</fullDescription>
+	
+	<interactiveView name="JS Form"></interactiveView>
+
+	<ports>
+		<outPort name="First name" index="0">First name</outPort>
+		<outPort name="Last name" index="1">Last name</outPort>
+	</ports>
+</knimeNode>
+```
