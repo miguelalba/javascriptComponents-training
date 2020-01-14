@@ -110,3 +110,95 @@ Finally the node is configured and plugin.xml would look as:
 
 ## Backend
 
+### JSONViewContent classes
+*org.knime.js.core.node.JSViewContent* persists view data to JSON. It wraps a Plain Old Java Object which is later used by KNIME to persist it and pass it to the view as a JSON object. The data is also deserialized from the JSON object in the view to the JSONViewContent class by KNIME. KNIME uses Jackson for data binding and usually every JSONViewContent object uses the `@JsonAutoDetect` to serialize every property of the class and this is enough for most cases. For special cases, the serialization can be customized with Jackson annotations, like changing the name to be used in the JSON object or skipping properties with certain visibility (protected or private).
+
+JSONViewContent classes must also implement *equals* and *hashCode* methods. These two methods are later used by KNIME.
+
+#### View value and representation
+For every JS view there is two JSONViewContent classes, one view representation and one view value. While they can be used indistinctively, the view representation is meant for holding static data related to the view such as font sizes, axis width, etc, while the view value holds actual data that may change with the user.
+
+When a JS node is executed, after the view is closed KNIME checks via the *equals* method if the view value changed and executes the node again if it did. To skip unnecessary executions it is important to only keep mutable data in the view data and properly implement its equals method. For example, a faulty *equals* method that always returns `true` would cause KNIME to always execute the node twice.
+
+#### Example view value
+
+This example only holds the first and last names which are used in the *equals* and *hashCode* methods.
+```java
+public class JSFormViewValue extends JSONViewContent {
+
+	String firstName = "";
+	String lastName = "";
+	
+	@Override
+	public boolean equals(Object obj) {
+		if (obj == null) {
+			return false;
+		}
+		if (obj == this) {
+			return true;
+		}
+		if (obj.getClass() != getClass()) {
+			return false;
+		}
+		
+		final JSFormViewValue other = (JSFormViewValue) obj;
+		return firstName.equals(other.firstName) && lastName.equals(other.lastName);
+	}
+	
+	@Override
+	public int hashCode() {
+		return Objects.hash(firstName, lastName);
+	}
+
+	@Override
+	public void saveToNodeSettings(NodeSettingsWO settings) {
+	}
+
+	@Override
+	public void loadFromNodeSettings(NodeSettingsRO settings) throws InvalidSettingsException {
+	}
+}
+```
+
+#### Example view representation
+
+This example has no properties and uses a pseudo identifier in the *hashCode* method.
+
+```java
+public class JSFormViewRepresentation extends JSONViewContent {
+
+	public final int pseudoIdentifier = (new Random()).nextInt();
+
+	@Override
+	public void saveToNodeSettings(NodeSettingsWO settings) {
+	}
+
+	@Override
+	public void loadFromNodeSettings(NodeSettingsRO settings) throws InvalidSettingsException {
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (obj == null) {
+			return false;
+		}
+		if (obj == this) {
+			return true;
+		}
+		if (obj.getClass() != getClass()) {
+			return false;
+		}
+		return false; // maybe add other criteria here
+	}
+
+	@Override
+	public int hashCode() {
+		return pseudoIdentifier;
+	}
+}
+```
+
+### NodeFactory class
+
+### NodeFactory description file
+
