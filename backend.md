@@ -1,8 +1,8 @@
 # Part 1 - Backend
 
-The backend of a JavaScript KNIME node involves the Java classes for the node and some extra configuration files. These Java classes usually are the Node model and the view representation and value. The latter two persist the node data from/to JSON and exchange the data between the backend and the frontend.
+The backend of a JavaScript KNIME node involves the Java classes for the node and some extra configuration files. These Java classes usually are the node model and the view representation and value. The latter two persist the node data from/to JSON and exchange the data between the backend and the frontend.
 
-The node model ideally does very little and mostly just process the inputs and outputs. When the type and number of inputs and outputs do not change, the backend stays unchanged and most of the time is the frontend that changes over time.
+The node model ideally does very little and mostly just processes the inputs and outputs. When the type and number of inputs and outputs do not change, the backend stays unchanged and most of the time is the frontend that changes over time.
 
 ## Getting the KNIME SDK Setup
 The KNIME SDK Setup project can be used as a minimal KNIME enviroment. Please read:
@@ -19,7 +19,7 @@ Once the target is applied a new project can be created to accomodate the new no
 
 In the Content tab the properties can be left for now and the generation of the activator class can be disabled as it will not be used. The use of templates also needs to be checked out.
 
-If the project was created properly, now Eclipse should open an Overview.
+If the project was created properly, now Eclipse should open an overview.
 ![eclipse_plugin_overview](img/eclipse_plugin_overview.PNG)
 
 ### KNIME dependencies
@@ -31,14 +31,14 @@ Before configuring the new plugin as a KNIME node the dependencies to KNIME need
 | org.knime.workbench.repository | Extension mechanism for nodes |
 | org.knime.js.core | KNIME JS nodes and related libraries (Jackson) |
 
-These dependencies should be available if the target file loaded properly. If not, please go back to Getting the KNIME Setup.
+These dependencies should be available if the target file loaded properly. If not, please go back to [Getting the KNIME SDK Setup](#Getting-the-KNIME-SDK-Setup).
 
 ### KNIME extensions
 Once the KNIME dependencies are in place, the new plugin can be configured as a KNIME node from the Extensions tab of the project (bottom).
 
-For every JS node written as a Javascript Component two extensions are needed: one javascript component (org.knime.js.core.javascriptComponent) that configures the node and it is the equivalent of a classic Java node and a web resources extension (org.knime.js.core.WebResources) that links to the JS and CSS files of the frontend.
+For every JS node written as a Javascript Component two extensions are needed: one javascript component, *org.knime.js.core.javascriptComponent*, that configures the node and it is the equivalent of a classic Java node and a web resources extension, *org.knime.js.core.WebResources*, that links to the JS and CSS files of the frontend.
 
-Now please add a new extension with the Add button and choose `org.knime.js.core.javascriptComponent`. The new extension will be added and a panel on the right prompts the extension details.
+Now please add a new extension with the Add button and choose *org.knime.js.core.javascriptComponent*. The new extension will be added and a panel on the right prompts the extension details.
 
 | Attribute | Description |
 | - | - |
@@ -53,9 +53,9 @@ Now please add a new extension with the Add button and choose `org.knime.js.core
 
 ![javascriptComponent_details](img/javascriptComponent_details.PNG)
 
-Before creating the web resources bundle it is a good idea to create now the JS source folder that will contain the JS and CSS files. Inside the plugin project create a folder js-src/jsform: `File > New > Folder`. Inside this folder create two empty files named form.js and form.css.
+Before creating the web resources bundle it is a good idea to create now the JS source folder that will contain the JS and CSS files. Inside the plugin project create a folder js-src/jsform: File > New > Folder. Inside this folder create two empty files named form.js and form.css.
 
-Now please add a new extension with the Add button and choose `org.knime.js.core.WebResources`.
+Now please add a new extension with the Add button and choose *org.knime.js.core.WebResources*.
 ![webResources_details](img/webResources_details.PNG)
 
 * webResourcesBundleID: Identifies the resources of this node and must match the implementationBundleID attribute of the JavaScript component or otherwise the backend and frontend will not be connected.
@@ -111,7 +111,7 @@ Finally the node is configured and plugin.xml would look as:
 ## Backend
 
 ### JSONViewContent classes
-*org.knime.js.core.node.JSViewContent* persists view data to JSON. It wraps a Plain Old Java Object which is later used by KNIME to persist it and pass it to the view as a JSON object. The data is also deserialized from the JSON object in the view to the JSONViewContent class by KNIME. KNIME uses Jackson for data binding and usually every JSONViewContent object uses the `@JsonAutoDetect` to serialize every property of the class and this is enough for most cases. For special cases, the serialization can be customized with Jackson annotations, like changing the name to be used in the JSON object or skipping properties with certain visibility (protected or private).
+*org.knime.js.core.node.JSViewContent* persists view data to JSON. It wraps a Plain Old Java Object which is later used by KNIME to persist it and pass it to the view as a JSON object. The data is also deserialized from the JSON object in the view to the JSONViewContent class by KNIME. KNIME uses [Jackson](https://github.com/FasterXML/jackson) for data binding and usually every JSONViewContent object uses the `@JsonAutoDetect` to serialize every property of the class and this is enough for most cases. For special cases, the serialization can be customized with Jackson annotations, like changing the name to be used in the JSON object or skipping properties with certain visibility (protected or private).
 
 JSONViewContent classes must also implement *equals* and *hashCode* methods. These two methods are later used by KNIME.
 
