@@ -71,6 +71,9 @@ Finally the node is configured and plugin.xml would look as:
 <?xml version="1.0" encoding="UTF-8"?>
 <?eclipse version="3.4"?>
 <plugin>
+   <extension point="org.knime.workbench.repository.nodes">
+     <node category-path="/" factory-class="jsform.JSFormFactory" />
+   </extension>
    <extension
          point="org.knime.js.core.javascriptComponents">
       <javascriptComponent
@@ -104,7 +107,6 @@ Finally the node is configured and plugin.xml would look as:
          </importResource>
       </webResourceBundle>
    </extension>
-
 </plugin>
 ```
 
@@ -124,6 +126,7 @@ When a JS node is executed, after the view is closed KNIME checks via the *equal
 
 This example only holds the first and last names which are used in the *equals* and *hashCode* methods.
 ```java
+@JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY)
 public class JSFormViewValue extends JSONViewContent {
 
 	String firstName = "";
@@ -165,6 +168,7 @@ public class JSFormViewValue extends JSONViewContent {
 This example has no properties and uses a pseudo identifier in the *hashCode* method.
 
 ```java
+@JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY)
 public class JSFormViewRepresentation extends JSONViewContent {
 
 	public final int pseudoIdentifier = (new Random()).nextInt();
