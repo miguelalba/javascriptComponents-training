@@ -20,3 +20,4 @@ Part 1 will cover briefly KNIME development with Eclipse and more importantly th
 # Part 2 - Frontend
 Part 2 will cover the JS and CSS frontend and how they are configured and connected to the backend.
 
+[Part 2 - Frontend](frontend.md)

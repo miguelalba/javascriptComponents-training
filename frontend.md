@@ -51,6 +51,36 @@ This javascript produces the following view:
 ![vanillajs_view](img/vanillajs_view.PNG)
 
 
-## Example with libraries: Bootstrap
+## Adding libraries
+
+First the Web resource bundle in the backend needs to be added a webDependency for Bootstrap 3.3.6.
+
+![libraries](img/adding_libraries.PNG)
+
+Now we can update our example with a Bootstrap form. Only the *createUI* method is updated:
+```javascript
+function createUI() {
+    let body = document.getElementsByTagName("body")[0];
+    body.innerHTML = `<div class="container-fluid">
+      <form class="form-horizontal">
+        <div class="form-group">
+          <label class="col-sm-2 control-label">First name</label>
+          <div class="col-sm-10">
+            <input type="text" class="form-control" id="firstName">
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="col-sm-2 control-label">Last name</label>
+          <div class="col-sm-10">
+            <input type="text" class="form-control" id="lastName">
+          </div>
+        </div>
+      </form>
+    </div>`;
+}
+```
+
+![bootstrap_view](img/bootstrap_view.PNG)
+
 
 ## Example with CSS
